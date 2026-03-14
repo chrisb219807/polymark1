@@ -1,0 +1,24 @@
+name: main-owner-guard
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  verify-owner-only-main-edits:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure only repository owner can edit main
+        run: |
+          if [ "${{ github.actor }}" != "${{ github.repository_owner }}" ]; then
+            echo "Only @${{ github.repository_owner }} can update main. This run was triggered by @${{ github.actor }}."
+            exit 1
+          fi
+          echo "Actor @${{ github.actor }} matches repository owner @${{ github.repository_owner }}."
